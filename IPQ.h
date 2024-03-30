@@ -5,50 +5,162 @@
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
+#include <string>
+#include <utility>
 using namespace std;
 
-template <int Capacity>
+template <int Capacity = 10>
 class IndexedPrioityQueue {
     private:
         class Heap {
             private:
+                pair<int, string> * heap; // Priority, TaskID
+                int theCapacity;
+                int theSize;
+                unordered_map<string, int> map; // TaskID, NodeIndex
 
-                unordered_map<string, int> Map; // TaskID, NodeIndex
-                vector<pair<int, string>>heap(Capacity); // Priority, TaskID
+                void percolateUp(int i){ // takes index
+                    if (i <= 0) return; // if root base case
 
-                void percolateUp(int i){
+                    int parent = (i-1)/2; // index of parent
+                    
+                    if (heap[i].first < heap[parent].first){
+                        // swap parent and child
+                        swap(heap[parent], heap[i]);
+
+                        // update map
+                        map[heap[parent].second] = parent;
+                        map[heap[i].second] = i;
+
+                        // recursive part
+                        percolateUp(parent);
+                    }
 
                 }
 
-                void percolateDown(int i){
+                void percolateDown(int i){ //takes index
+                    int left = 2*i + 1;
+                    int right = 2*i + 2;
+                    int smallest = i;
+                    if (left < theSize && heap[left].first < heap[i].first){
+                        smallest = left;
+                    }
+                    if (right < theSize && heap[right].first < heap[i].first){
+                        smallest = right;
+                    }
+                    if (smallest != i){
+                        // swap smallest and i
+                        swap(heap[smallest], heap[i]);
+                        map[heap[smallest].second] = smallest;
+                        map[heap[i].second] = i;
+                        percolateDown(smallest); // recursive step
+                    }
 
                 }
 
-                void reserve(int i){
+            public:
+
+                Heap() : theCapacity(Capacity), theSize(0) {
+                    int theCapacity = Capacity;
+                    heap = new pair<int, string>[theCapacity];
+                }
+
+                // deconstructor
+                ~Heap() {
+                    delete[] heap;
+                }
+
+                void reserve(int newCapacity){
+                    // Changes heap array capacity to newCapacity
+                    int greatestValue = max(newCapacity, 10);
+                    // only if it is larger than current size
+                    if (greatestValue > theCapacity){
+                        pair<int, string> newArray[greatestValue];
+
+                    for (int i = 0; i < theSize; i++){
+                        temp[i] = heap[i];
+                    }
+                    pair<int, string> * temp = heap;
+                    heap = newArray;
+                    delete [] temp;
+                    theCapacity = greatestValue;
+
+                    }
                     
                 }
-            public:
+
                 void insert(const string& id, int priority){
+                    if (theSize >= theCapacity){
+                        reserve(theSize * 2);
+                    }
+                    heap[theSize] = make_pair(priority, id);
+                    map[id] = theSize;
+
+                    percolateUp(theSize);
+
+                    theSize++;
 
                 }
 
-                void update(int index, int newPriority){
-
+                void update(const string& id, int newPriority){
+                    if (map.count(id) = 0){
+                        throw invalid_argument("Task ID not found");
+                    }
+                    int idx = map[id];
+                    if (heap[idx].first < newPriority){
+                        heap[idx].first = newPriority;
+                        percolateDown(idx);
+                    } else if (heap[idx].first > newPriority){
+                        heap[idx].first = newPriority;
+                        percolateUp(idx);
+                    }
                 }
 
                 void remove(const string& id){
+                    if (map.count(id) = 0){
+                        throw invalid_argument("Task ID not found");
+                    }
+                    // take index swap with last (theSize-1), then reduce size
+                    int idx = map[id];
+                    swap(heap[idx], heap[theSize-1]);
+
+                    // update map
+                    map[heap[idx].second] = idx;
+                    map.erase[heap[theSize-1].second];
+                    theSize--;
+                    percolateDown(0);
 
                 }
 
+                void clear(){
+                    theSize = 0;
+                    map.clear();
+                }
+
+                int size(){
+                    return theSize;
+                }
                 bool isEmpty() const {
-                    return heap.empty();
+                    return (theSize == 0);
                 }
 
                 pair<int, string> getMin() {
-                    if (isempty()){
+                    if (isEmpty()){
                         throw out_of_range("Heap is empty");
                     }
                     return heap[0];
+                }
+
+                // vector contruction function
+                void constructFromVectors(const vector<string>& v1, const vector<int>& v2){
+                    if (v1.size() != v2.size){
+                        throw invalid_argument("Vectors must be the same size");
+                    }
+                    clear();
+                    reserve(v1.size() * 2);
+                    for (int i = 0; i < v1.size(); i++){
+                        insert(v1[i], v2[i]);
+                    }
                 }
 
 
@@ -58,26 +170,34 @@ class IndexedPrioityQueue {
 
     public:
         // constructor
+        IndexedPrioityQueue(){
+        }
 
+        // constructor from 2 vectors
+        IndexedPrioityQueue(const vector<string>& v1, const vector<int>& v2){
+            heap.constructFromVectors(v1, v2);
+        }
 
-        // destructor
-
-
+        // destructor not needed heap will be deleted and complier will delete the Umap
 
         void insert(const string& id, int priority){
-
+            heap.insert(id, priority);
         }
 
         void updatePriority(const string& id, int newPriority){
-
+            heap.update(id, newPriority);
         }
 
         void remove(const string& id) {
-
+            heap.remove(id);
         }
 
         void clear(){
+            heap.clear();
+        }
 
+        void reserve(int i){
+            heap.reserve(i);
         }
 
         bool isEmpty() const {
@@ -85,25 +205,30 @@ class IndexedPrioityQueue {
         }
 
         int size(){
+            return heap.size();
+        }
+
+        string& getMin() const {
+            if (isEmpty()){
+                throw out_of_range("Heap is empty");
+            }
+            return heap.getMin().second;
 
         }
 
         string& deleteMin(){
+            if (isEmpty()){
+                throw out_of_range("Heap is empty");
+            }
+            string min_ID = getMin();
 
+            heap.remove(min_ID);
+
+            return min_ID;
         }
 
-        string& getMin() const {
-
-        }
-
-
-    
 
 };
-
-
-
-
 
 
 
