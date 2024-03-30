@@ -10,7 +10,7 @@
 using namespace std;
 
 template <int Capacity = 10>
-class IndexedPrioityQueue {
+class IndexedPriorityQueue {
     private:
         class Heap {
             private:
@@ -103,7 +103,7 @@ class IndexedPrioityQueue {
                 }
 
                 void update(const string& id, int newPriority){
-                    if (map.count(id) = 0){
+                    if (map.count(id) == 0){
                         throw invalid_argument("Task ID not found");
                     }
                     int idx = map[id];
@@ -229,8 +229,6 @@ class IndexedPrioityQueue {
 
 
 };
-
-
 
 
 #endif
