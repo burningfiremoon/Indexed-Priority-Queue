@@ -1,54 +1,94 @@
 #include <iostream>
 #include "IndexedPriorityQueue.h"
+using namespace std;
 
 void testIndexedPriorityQueue() {
     // Test constructor and insert
-    IndexedPriorityQueue<5> ipq;
+    IndexedPriorityQueue<10> ipq;
+
     ipq.insert("task1", 5);
     ipq.insert("task2", 3);
     ipq.insert("task3", 7);
     ipq.insert("task4", 2);
     ipq.insert("task5", 6);
+    ipq.insert("task6", 10);
+    ipq.insert("task7", 4);
+    ipq.insert("task8", 9);
+    ipq.insert("task9", 8);
+    ipq.insert("task10", 15);
+    ipq.insert("task11", 1);
 
-    // Test size and isEmpty
-    std::cout << "Size: " << ipq.size() << ", Is empty: " << (ipq.isEmpty() ? "true" : "false") << std::endl;
+    cout << "this is the capacity: " << ipq.capacity() << endl;
+
+    // Test size, isEmpty and contains
+    cout << endl;
+    cout << "Size: " << ipq.size() << ", Is empty: " << (ipq.isEmpty() ? "true" : "false") << ", Contains task1?: " << (ipq.contains("task1") ? "true" : "false") << ", Contains task80?: " << (ipq.contains("task80") ? "true" : "false") << endl;
 
     // Test getMin
-    std::cout << "Min task: " << ipq.getMin() << std::endl;
+    cout << endl;
+    cout << "Min task: " << ipq.getMin() << endl;
 
     // Test deleteMin
-    std::cout << "Deleting min task: " << ipq.deleteMin() << std::endl;
-    std::cout << "Min task after deletion: " << ipq.getMin() << std::endl;
+    cout << endl;
+    cout << "Deleting min task: " << ipq.deleteMin() << endl;
+    cout << "Min task after deletion: " << ipq.getMin() << endl;
 
     // Test updatePriority
-    ipq.updatePriority("task3", 1);
-    std::cout << "Updated priority of task3" << std::endl;
-    std::cout << "Min task after update: " << ipq.getMin() << std::endl;
+    cout << endl;
+    ipq.updatePriority("task3", 0);
+    cout << "Updated priority of task3" << endl;
+    cout << "Min task after update: " << ipq.getMin() << endl;
 
     // Test remove
+    cout << endl;
+    cout << "Contains task2?: " << (ipq.contains("task2") ? "true" : "false") << endl;
+    cout << "Size before removal: " << ipq.size() << endl;
     ipq.remove("task2");
-    std::cout << "Removed task2" << std::endl;
-    std::cout << "Size after removal: " << ipq.size() << std::endl;
+    cout << "Removed task2" << endl;
+    cout << "Contains task2?: " << (ipq.contains("task2") ? "true" : "false") << endl;
+    cout << "Size after removal: " << ipq.size() << endl;
 
     // Test clear
+    cout << endl;
     ipq.clear();
-    std::cout << "Cleared IPQ" << std::endl;
-    std::cout << "Size after clearing: " << ipq.size() << std::endl;
+    cout << "Cleared IPQ" << endl;
+    cout << "Size after clearing: " << ipq.size() << endl;
 
     // Test exceptions
+    cout << endl;
+    cout << "Start of exception test" << endl;
+    cout << endl;
     try {
-        std::cout << "Attempting to delete from an empty IPQ" << std::endl;
+        cout << "Attempting to delete from an empty IPQ" << endl;
         ipq.deleteMin();
-    } catch (const std::exception& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cout << "Exception caught: " << e.what() << endl;
     }
 
+    cout << endl;
     try {
-        std::cout << "Attempting to update priority of non-existent task" << std::endl;
+        cout << "Attempting to update priority of non-existent task" << endl;
         ipq.updatePriority("task10", 10);
-    } catch (const std::exception& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cout << "Exception caught: " << e.what() << endl;
     }
+
+
+    // Constructor test
+    cout << endl;
+    vector<string> v1 = {"Task1","Task2","Task3","Task4","Task5"};
+    vector<int> v2 = {2,1,5,4,3};
+    IndexedPriorityQueue<> ipqVectors(v1, v2);
+
+    ipqVectors.ddisplay();
+
+    cout << endl;
+    IndexedPriorityQueue<15> ipqSize;
+    cout << "Capacity: " << ipqSize.capacity() << endl;
+
+    cout << endl;
+    IndexedPriorityQueue<5> ipqSmallSize;
+    cout << "Capacity: " << ipqSmallSize.capacity() << endl;
 }
 
 int main() {

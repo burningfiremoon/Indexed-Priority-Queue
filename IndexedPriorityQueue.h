@@ -60,9 +60,11 @@ class IndexedPriorityQueue {
 
             public:
 
-                Heap() : theCapacity(Capacity), theSize(0) {
-                    int theCapacity = Capacity;
+                Heap() {
+                    theCapacity = Capacity;
                     heap = new pair<int, string>[theCapacity];
+                    theSize = 0;
+
                 }
 
                 // deconstructor
@@ -75,14 +77,15 @@ class IndexedPriorityQueue {
                     int greatestValue = max(newCapacity, 10);
                     // only if it is larger than current size
                     if (greatestValue > theCapacity){
-                        pair<int, string> newArray[greatestValue];
+                        pair<int, string>* newArray = new pair<int, string> [greatestValue];
 
                     for (int i = 0; i < theSize; i++){
-                        temp[i] = heap[i];
+                        newArray[i] = heap[i];
                     }
-                    pair<int, string> * temp = heap;
+                    delete[] heap;
+
                     heap = newArray;
-                    delete [] temp;
+
                     theCapacity = greatestValue;
 
                     }
@@ -95,7 +98,6 @@ class IndexedPriorityQueue {
                     }
                     heap[theSize] = make_pair(priority, id);
                     map[id] = theSize;
-
                     percolateUp(theSize);
 
                     theSize++;
@@ -130,7 +132,7 @@ class IndexedPriorityQueue {
 
                     // update map
                     map[heap[idx].second] = idx;
-                    map.erase[heap[theSize-1].second];
+                    map.erase(heap[theSize-1].second);
                     theSize--;
                     percolateDown(0);
 
@@ -145,20 +147,24 @@ class IndexedPriorityQueue {
                     return theSize;
                 }
 
+                int capacity(){
+                    return theCapacity;
+                }
+
                 bool isEmpty() const {
                     return (theSize == 0);
                 }
 
-                pair<int, string> getMin() {
+                string& getMin() const {
                     if (isEmpty()){
                         throw out_of_range("Heap is empty");
                     }
-                    return heap[0];
+                    return heap[0].second;
                 }
 
                 // vector contruction function
                 void constructFromVectors(const vector<string>& v1, const vector<int>& v2){
-                    if (v1.size() != v2.size){
+                    if (v1.size() != v2.size()){
                         throw invalid_argument("Vectors must be the same size");
                     }
                     clear();
@@ -168,6 +174,14 @@ class IndexedPriorityQueue {
                     }
                 }
 
+                void ddisplay(){
+                    cout << "Size: " << theSize << ", Capacity: " << theCapacity << endl;
+                    for (int i = 0; i<theSize; i++){
+                        cout << heap[i].first << " " << heap[i].second << endl;
+                    }
+
+                }
+
 
         };
         Heap heap;
@@ -175,11 +189,10 @@ class IndexedPriorityQueue {
 
     public:
         // constructor
-        IndexedPrioityQueue(){
-        }
+        IndexedPriorityQueue(){ }
 
         // constructor from 2 vectors
-        IndexedPrioityQueue(const vector<string>& v1, const vector<int>& v2){
+        IndexedPriorityQueue(const vector<string>& v1, const vector<int>& v2){
             heap.constructFromVectors(v1, v2);
         }
 
@@ -213,6 +226,10 @@ class IndexedPriorityQueue {
             return heap.size();
         }
 
+        int capacity(){
+            return heap.capacity();
+        }
+
         bool contains(const string& id){
             return heap.contains(id);
         }
@@ -221,19 +238,24 @@ class IndexedPriorityQueue {
             if (isEmpty()){
                 throw out_of_range("Heap is empty");
             }
-            return heap.getMin().second;
+            return heap.getMin();
 
         }
 
-        string& deleteMin(){
+        string deleteMin(){
             if (isEmpty()){
                 throw out_of_range("Heap is empty");
             }
-            string min_ID = getMin();
+            
+            string min_ID = heap.getMin();
 
             heap.remove(min_ID);
 
             return min_ID;
+        }
+
+        void ddisplay(){
+            heap.ddisplay();
         }
 
 
