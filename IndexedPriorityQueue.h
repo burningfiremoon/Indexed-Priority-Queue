@@ -116,8 +116,12 @@ class IndexedPriorityQueue {
                     }
                 }
 
+                bool contains(const string& id){
+                    return map.count(id) == 1;
+                }
+
                 void remove(const string& id){
-                    if (map.count(id) = 0){
+                    if (!contains(id)){
                         throw invalid_argument("Task ID not found");
                     }
                     // take index swap with last (theSize-1), then reduce size
@@ -140,6 +144,7 @@ class IndexedPriorityQueue {
                 int size(){
                     return theSize;
                 }
+
                 bool isEmpty() const {
                     return (theSize == 0);
                 }
@@ -206,6 +211,10 @@ class IndexedPriorityQueue {
 
         int size(){
             return heap.size();
+        }
+
+        bool contains(const string& id){
+            return heap.contains(id);
         }
 
         string& getMin() const {
