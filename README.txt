@@ -1,14 +1,16 @@
-Charles Zhang
-cza147@sfu.ca
-301569010
-
+Charles Zhang, cza147@sfu.ca, 301569010
+Design Documentation: HERE
+Testing Regimen: HERE
 
 Design Documentation: IndexedPriorityQueue.h
 
-The IndexedPriorityQueue class is a template class designed to efficiently manage a collection of tasks (stored as strings) with associated integer priorities. 
-It provides operations for inserting tasks, updating priorities, removing tasks, and querying the task with the highest priority.
-The implementation is done based on a binary heap data structure along with an unordered map to map task IDs to its heap postion.
-This allows for O(log(n)) times for task removal, insertion, priority updates, and deleting top priority.
+The IndexedPriorityQueue class is a template class designed to manage a collection of tasks (stored as strings) with associated integer priorities. 
+It provides operations for inserting tasks (insert(const string& id, int priority)),
+updating priorities (updatePriority(const string& id, int newPriority)),
+removing tasks (remove(const string& id)),
+and querying the task with the highest priority.
+The implementation is done based on an array based binary heap data structure along with an unordered map to map task IDs to its heap postion.
+The stored connection between task IDs and its heap position allows for O(log(n)) times for task removal, insertion, priority updates, and deleting top priority.
 Additionally the unordered map allows for O(1) value searching.
 
 Testing Regimen: IndexedPriorityQueue_Test.cpp
